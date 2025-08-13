@@ -12,8 +12,12 @@ export const MainRouter = createBrowserRouter(
         <Route>
             <Route element={<Layout />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<ProtectedRoutes><App /></ProtectedRoutes>} />
-                <Route path="*" element = {<PageNotFound/>}/>
+                <Route path="/dashboard" element={<ProtectedRoutes><App/></ProtectedRoutes>} />
+                <Route path="*" element = {<ProtectedRoutes><PageNotFound/></ProtectedRoutes>}/>
+                {/* <Route element = {<ProtectedRoutes/>}>
+                    <Route path = "/dashboard" element = {<App/>}/>
+                    <Route path = "*" element = {<PageNotFound/>}/>
+                </Route> */}
 
             </Route>
             <Route path="/login" element={<LoginPage />} />

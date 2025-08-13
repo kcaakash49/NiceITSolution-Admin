@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useAuthStore } from "../store/useAuthStore";
+
 import { loginAdmin } from "../api/auth";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const setToken = useAuthStore((state) => state.setToken);
+  const setUser  = useAuthStore((state) => state.setUser);
  
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -24,12 +25,15 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: loginAdmin,
     onSuccess: (data) => {
-      setToken(data.token);
-      navigate("/");
+      queryClient.setQueryData(["current-user"], data);
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      setUser(data?.user);
+      navigate("/", { replace: true});
     },
     onError: () => {
       alert("Invalid credentials");
@@ -55,7 +59,7 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Email"
-            className="border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition"
+            className="border  border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition dark:bg-gray-700"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -64,7 +68,7 @@ export default function LoginPage() {
           <input
             type="password"
             placeholder="Password"
-            className="border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition"
+            className="border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition dark:bg-gray-700"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

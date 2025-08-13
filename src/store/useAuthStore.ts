@@ -2,10 +2,16 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { PersistStorage, StorageValue } from "zustand/middleware";
 
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
 
 interface AuthState {
-  token: string | null;
-  setToken: (token: string) => void;
+  user: User | null;
+  setUser: (user: User) => void;
   logout: () => void;
 }
 
@@ -33,9 +39,9 @@ const sessionStorageWrapper: PersistStorage<AuthState> = {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: null,
-      setToken: (token) => set({ token }),
-      logout: () => set({ token: null }),
+      user: null,
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null }),
     }),
     {
       name: "auth-storage",
