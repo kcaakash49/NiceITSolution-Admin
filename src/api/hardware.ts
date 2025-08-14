@@ -1,3 +1,4 @@
+import type { CreateHardwareProductSchema } from "@kcaakash/validators";
 import axios from "axios";
 
 export async function fetchCategories() {
@@ -5,7 +6,7 @@ export async function fetchCategories() {
   return data; // should be [{ id, name }]
 }
 
-export async function createProduct(product: any) {
+export async function createProduct(product: CreateHardwareProductSchema) {
   const { data } = await axios.post("/api/hardware/products", product);
   return data;
 }
