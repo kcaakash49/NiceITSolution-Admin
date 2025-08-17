@@ -4,6 +4,8 @@ import LoginPage from "../pages/LoginPage";
 import Layout from "../Layout";
 import ProtectedRoutes from "../components/ProtectedRoutes";
 import PageNotFound from "../pages/PageNotFound";
+import AddService from "../pages/AddService";
+import ListService from "../pages/ListService";
 // import ProtectedRoutes from "../components/ProtectedRoutes";
 
 
@@ -13,6 +15,8 @@ export const MainRouter = createBrowserRouter(
             <Route element={<Layout />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<ProtectedRoutes><App/></ProtectedRoutes>} />
+                <Route path = "/add-service" element = {<ProtectedRoutes> <AddService/></ProtectedRoutes>}/>
+                <Route path = "/list-service" element = {<ProtectedRoutes><ListService/></ProtectedRoutes>}/>
                 <Route path="*" element = {<ProtectedRoutes><PageNotFound/></ProtectedRoutes>}/>
                 {/* <Route element = {<ProtectedRoutes/>}>
                     <Route path = "/dashboard" element = {<App/>}/>

@@ -3,12 +3,36 @@ import { Outlet, NavLink } from "react-router-dom";
 import { useSignout } from "./hooks/useSignOut";
 // import type { UseMutationResult } from "@tanstack/react-query";
 
-const navItems = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Add Service", path: "/add-service" },
-  { name: "Add FTTH Product", path: "/add-ftth-product" },
-  { name: "Display Products", path: "/products" },
+// const navItems = [
+//   { name: "Dashboard", path: "/dashboard" },
+//   { name: "Add Service", path: "/add-service" },
+//   { name: "Add FTTH Product", path: "/add-ftth-product" },
+//   { name: "Display Products", path: "/products" },
+// ];
+
+// Navigation structure with sections
+const navSections = [
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+  },
+  {
+    name: "Services",
+    children: [
+      { name: "Add Service", path: "/add-service" },
+      { name: "Edit Service", path: "/edit-service"},
+      { name: "List Service", path: "/list-service"}
+    ],
+  },
+  {
+    name: "Products",
+    children: [
+      { name: "Add FTTH Product", path: "/add-ftth-product" },
+      { name: "Display Products", path: "/products" },
+    ],
+  },
 ];
+
 
 export default function Layout() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -23,7 +47,7 @@ export default function Layout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const signOutMutation = useSignout();
-  
+
 
   useEffect(() => {
     if (darkMode) {
@@ -46,42 +70,6 @@ export default function Layout() {
       )}
 
       {/* Sidebar */}
-      {/* <nav
-        className={`fixed inset-y-0 md:static top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
-          transform transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
-        `}
-      >
-        <h2 className="text-xl md:2xl font-bold mb-5 md:mb-8">Admin Panel</h2>
-        <ul className="flex flex-col space-y-3">
-          {navItems.map(({ name, path }) => (
-            <li key={path}>
-              <NavLink
-                to={path}
-                className={({ isActive }) =>
-                  `block px-4 py-2 rounded ${
-                    isActive
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
-                  } transition`
-                }
-                onClick={() => setSidebarOpen(false)}
-              >
-                {name}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-        <button>LogOut</button>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          aria-label="Toggle Dark Mode"
-          className="mt-auto px-4 py-2 rounded border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition text-center"
-        >
-          {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        </button>
-      </nav> */}
 
       <nav
         className={`fixed inset-y-0 md:static top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
@@ -93,7 +81,7 @@ export default function Layout() {
         <h2 className="text-xl md:2xl font-bold mb-5 md:mb-8">Admin Panel</h2>
 
         {/* Navigation Links */}
-        <ul className="flex flex-col space-y-3">
+        {/* <ul className="flex flex-col space-y-3">
           {navItems.map(({ name, path }) => (
             <li key={path}>
               <NavLink
@@ -110,7 +98,52 @@ export default function Layout() {
               </NavLink>
             </li>
           ))}
+        </ul> */}
+        <ul className="flex flex-col space-y-3">
+          {navSections.map((section) =>
+            section.children ? (
+              <li key={section.name}>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                  {section.name}
+                </div>
+                <ul className="ml-2 space-y-2">
+                  {section.children.map(({ name, path }) => (
+                    <li key={path}>
+                      <NavLink
+                        to={path}
+                        className={({ isActive }) =>
+                          `block px-4 py-2 rounded ${isActive
+                            ? "bg-blue-600 text-white"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+                          } transition`
+                        }
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {name}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li key={section.path}>
+                <NavLink
+                  to={section.path!}
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded ${isActive
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+                    } transition`
+                  }
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  {section.name}
+                </NavLink>
+              </li>
+            )
+          )}
         </ul>
+
 
         {/* Bottom Section */}
         <div className="mt-auto flex flex-col space-y-3">
@@ -175,7 +208,7 @@ export default function Layout() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-grow p-6 overflow-auto flex flex-col">
+        <main className="flex-grow overflow-auto flex flex-col">
           <Outlet />
         </main>
 

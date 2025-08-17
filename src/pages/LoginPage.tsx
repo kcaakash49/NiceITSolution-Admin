@@ -38,6 +38,7 @@ export default function LoginPage() {
     onError: () => {
       alert("Invalid credentials");
     },
+    
   });
 
   const handleSubmit = (e: React.FormEvent) => {

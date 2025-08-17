@@ -5,6 +5,7 @@ import { verifyCookie } from "../api/auth";
 import { useEffect, useRef } from "react";
 import { useAuthStore, type User } from "../store/useAuthStore";
 import { isEqual } from "lodash";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const setUser = useAuthStore(state => state.setUser);
@@ -28,7 +29,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         }
     }, [isSuccess, user, setUser, dataUpdatedAt])
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div className="flex flex-1 items-center justify-center"><LoadingSpinner/></div>;
 
     if (isError || !user) {
 
