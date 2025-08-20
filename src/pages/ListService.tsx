@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getService } from "../api/service";
 import ServiceCard from "../components/ServiceCard";
-
+import AddPlanModal from "../components/AddPlanModal";
 
 export default function ListService() {
   const { data, isLoading, isError } = useQuery({
@@ -9,6 +10,11 @@ export default function ListService() {
     queryFn: getService,
     retry: false,
   });
+
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+
+  const openAddPlanModal = (serviceId: string) => setSelectedServiceId(serviceId);
+  const closeAddPlanModal = () => setSelectedServiceId(null);
 
   if (isLoading) {
     return <div className="text-center py-10">Loading...</div>;
@@ -30,10 +36,19 @@ export default function ListService() {
             name={service.name}
             description={service.description}
             onEdit={(id: string) => console.log("Edit service:", id)}
-            onAddPlan={(id: string) => console.log("Add plan for service:", id)}
+            onAddPlan={(id: string) => openAddPlanModal(id)} // open modal here
           />
         ))}
       </div>
+
+      {/* Add Plan Modal */}
+      {selectedServiceId && (
+        <AddPlanModal
+          serviceId={selectedServiceId}
+          isOpen={true}
+          onClose={closeAddPlanModal}
+        />
+      )}
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         }
     }, [isSuccess, user, setUser, dataUpdatedAt])
 
-    if (isLoading) return <div className="flex flex-1 items-center justify-center"><LoadingSpinner/></div>;
+    if (isLoading) return <div className="flex flex-1 items-center justify-center dark:bg-gray-900"><LoadingSpinner/></div>;
 
     if (isError || !user) {
 
