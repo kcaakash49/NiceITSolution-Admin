@@ -1,9 +1,11 @@
 
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCategories } from "../api/hardware";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCategories, removeCategory } from "../api/hardware";
 import AddCategoryModal from "../components/AddCategoryModal";
+import { Plus, X } from "lucide-react";
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 
 export default function AddHardwareProduct() {
     const [formData, setFormData] = useState({
@@ -14,6 +16,19 @@ export default function AddHardwareProduct() {
         stock: "",
         length: "",
     });
+    const queryClient = useQueryClient();
+    const deleteMutation = useMutation({
+        mutationFn: removeCategory,
+        onSuccess: (data) => {
+            // alert(data.message)
+            queryClient.invalidateQueries({
+                queryKey: ['categories']
+            })
+        },
+        onError: (data) => {
+            alert(data.message)
+        }
+    })
 
     const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -87,60 +102,71 @@ export default function AddHardwareProduct() {
                             Category
                         </label>
                         <div className="flex items-center space-x-3">
-                            <select
-                                name="categoryId"
-                                value={formData.categoryId}
-                                onChange={handleChange}
-                                className={`flex-1 px-4 py-2 rounded-lg border dark:border-gray-700 
-    bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
-    focus:ring-2 focus:ring-blue-500 
-    ${isLoading || isError ? "opacity-60 cursor-not-allowed" : ""}`}
-                            >
-                                <option value="" disabled hidden>
-                                    Select Category
-                                </option>
+                            <Listbox value={formData.categoryId} onChange={(value: string) => setFormData({...formData, categoryId: value})}>
+                                <div className="relative flex-1">
+                                    <ListboxButton
+                                        className={`w-full px-4 py-2 rounded-lg border dark:border-gray-700 
+                        bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                        focus:ring-2 focus:ring-blue-500 
+                        ${isLoading || isError ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    >
+                                        {formData.categoryId
+                                            ? categories?.categories?.find((c: any) => c.id === formData.categoryId)?.name
+                                            : "Select Category"}
+                                    </ListboxButton>
 
-                                {/* Loading state */}
-                                {isLoading && (
-                                    <option disabled className="text-gray-500 text-center">
-                                        Loading categories...
-                                    </option>
-                                )}
-
-                                {/* Error state */}
-                                {isError && (
-                                    <option disabled className="text-red-500 dark:text-red-500 font-semibold text-center">
-                                        ⚠ Error loading categories
-                                    </option>
-                                )}
-
-                                {/* Normal state */}
-                                {!isLoading &&
-                                    !isError &&
-                                    categories?.categories?.map((cat: any) => (
-
-                                        <option key={cat.id} value={cat.id}>
-                                            {cat.name}
-                                        </option>
-                                        
-
-                                        
-                                    ))}
-                            </select>
-
+                                    <ListboxOptions className="absolute mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto z-10">
+                                        {isLoading && (
+                                            <div className="px-4 py-2 text-gray-500 text-center">Loading categories...</div>
+                                        )}
+                                        {isError && (
+                                            <div className="px-4 py-2 text-red-500 font-semibold text-center">
+                                                ⚠ Error loading categories
+                                            </div>
+                                        )}
+                                        {!isLoading &&
+                                            !isError &&
+                                            categories?.categories?.map((cat: any) => (
+                                                <ListboxOption
+                                                    key={cat.id}
+                                                    value={cat.id}
+                                                    className={({ active }) =>
+                                                        `cursor-pointer select-none relative px-4 py-2 flex justify-between items-center ${active ? "bg-blue-100 dark:bg-blue-600" : ""
+                                                        }`
+                                                    }
+                                                >
+                                                    <span>{cat.name}</span>
+                                                    {user?.role === "superadmin" && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                deleteMutation.mutate({categoryId : cat.id})
+                                                            }}
+                                                            disabled = {deleteMutation.isPending}
+                                                            className="text-red-500 hover:text-red-700"
+                                                        >
+                                                            <X size={16} />
+                                                        </button>
+                                                    )}
+                            </ListboxOption>
+                                            ))}
+                                    </ListboxOptions>
+                                </div>
+                            </Listbox>
 
                             {user?.role === "superadmin" && (
                                 <button
                                     type="button"
-                                    className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                    className="p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700"
                                     onClick={() => setModalOpen(true)}
                                 >
-                                    Add Category
+                                    <Plus size={16} />
                                 </button>
                             )}
                         </div>
-
                     </div>
+
 
                     {/* Price & Stock */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -180,7 +206,7 @@ export default function AddHardwareProduct() {
                         <input
                             type="text"
                             name="length"
-                            
+
                             value={formData.length}
                             onChange={handleChange}
                             placeholder="Enter length (e.g., 100m)"
@@ -200,7 +226,7 @@ export default function AddHardwareProduct() {
                 </form>
             </div>
             {
-                isModalOpen && <AddCategoryModal isOpen = {isModalOpen} onClose={() => setModalOpen(false)}/>
+                isModalOpen && <AddCategoryModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
             }
         </div>
     );

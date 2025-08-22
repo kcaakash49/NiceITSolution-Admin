@@ -21,3 +21,11 @@ export async function createCategory(category: { name: string, isLengthNeeded: b
   });
   return data;
 }
+
+export async function removeCategory(categoryId : {categoryId: string}) {
+  const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ftth/delete-category`, categoryId, {
+    withCredentials: true
+  });
+
+  return data;
+}
