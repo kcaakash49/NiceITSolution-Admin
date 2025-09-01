@@ -7,9 +7,10 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function ListService() {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["Service-list"],
+    queryKey: ["service-list"],
     queryFn: getService,
     retry: false,
+    staleTime: 50*60*1000
   });
 
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
@@ -29,7 +30,7 @@ export default function ListService() {
     <div className="mx-auto px-4 py-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Our Services</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {data?.map((service: any) => (
           <ServiceCard
             key={service.id}

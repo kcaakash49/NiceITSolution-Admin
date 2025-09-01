@@ -1,5 +1,5 @@
 // components/AddPlanModal.tsx
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { createPlan } from "../api/plan";
 
@@ -23,12 +23,16 @@ export default function AddPlanModal({ serviceId,isOpen, onClose }: AddPlanModal
     isActive: true,
   });
 
+  const queryClient = useQueryClient();
   
   const planMutation = useMutation({
     mutationFn: createPlan,
     onSuccess: (data) => {
       alert("Adding Success");
       console.log(data);
+      queryClient.invalidateQueries({
+        queryKey: ['plan-list']
+      })
       onClose();
     },
     onError: () => {

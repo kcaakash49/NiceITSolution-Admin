@@ -1,5 +1,5 @@
 import type { CreateServiceProductSchema } from "@kcaakash/validators";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { createService } from "../api/service";
 
@@ -9,10 +9,15 @@ export default function AddService() {
     description: "",
   });
 
+  const queryClient = useQueryClient();
+
   const serviceMutation = useMutation({
     mutationFn: createService,
     onSuccess: (data) => {
         console.log(data);
+        queryClient.invalidateQueries({
+          queryKey: ['service-list']
+        })
         alert("Service Added Successfully");
     },
     onError: () => {
@@ -33,7 +38,7 @@ export default function AddService() {
   };
 
   return (
-    <div className="max-w-7xl bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md">
+    <div className="max-w-7xl bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md w-full mx-auto">
       {/* Title */}
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-center">
         Add New Service

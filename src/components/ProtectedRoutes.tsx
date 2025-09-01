@@ -16,18 +16,21 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         queryKey: ["current-user"],
         queryFn: verifyCookie,
         retry: false,
-        staleTime: 4 * 60 * 1000,
-        refetchInterval: 5 * 60 * 1000,
+        staleTime: 1 * 60 * 1000,
+        refetchInterval: 1.5 * 60 * 1000,
         refetchOnMount: data => !data,
+        enabled: !localStorage.getItem('isSigningOut'),
 
     });
 
     const prevUserRef = useRef<User>(userInfo);
 
     useEffect(() => {
+        
         if (isSuccess && user) {
             if (!isEqual(prevUserRef.current, user.user)) {
                 // To escape react's scheduling so, userinfo gets stored in sessionstorage without refresh
+                console.log("Adding User");
                 requestAnimationFrame(() => {
                     setUser(user.user);
                     prevUserRef.current = user.user;

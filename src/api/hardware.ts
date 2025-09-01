@@ -1,6 +1,9 @@
-import type { CategorySchema, CreateHardwareProductSchema } from "@kcaakash/validators";
+import type { CreateHardwareProductSchema } from "@kcaakash/validators";
 import axios from "axios";
 
+
+
+//getting Categories
 export async function fetchCategories() {
   console.log("Request to fetch");
   const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/ftth/get-categories`,{
@@ -9,17 +12,22 @@ export async function fetchCategories() {
   return data; // should be [{ id, name }]
 }
 
+//adding Product
 export async function createProduct(product: CreateHardwareProductSchema) {
-  const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ftth/add-product`, product, {
+  const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ftth/add-product`, product, {
     withCredentials: true
   });
-  return data;
+  console.log("Resposne", response);
+  return response?.data;
 }
 
-export async function createCategory(category: CategorySchema) {
-  
+//adding Category
+export async function createCategory(category: FormData) {
   const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ftth/add-category`, category, {
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+      "Content-Type" : "multipart/form-data"
+    }
   });
   return data;
 }

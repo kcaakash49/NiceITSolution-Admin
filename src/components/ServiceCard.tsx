@@ -14,7 +14,7 @@ type ServiceCardProps = {
     onAddPlan,
   }: ServiceCardProps) {
     return (
-      <div className="w-full max-w-sm h-[270px] bg-white dark:bg-gray-800 shadow-md hover:shadow-xl rounded-2xl p-6 flex flex-col justify-between transition-all duration-300">
+      <div className="w-full max-w-md h-[270px] bg-white dark:bg-gray-800 shadow-md hover:shadow-xl rounded-2xl p-6 flex flex-col justify-between transition-all duration-300">
         {/* Content */}
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">

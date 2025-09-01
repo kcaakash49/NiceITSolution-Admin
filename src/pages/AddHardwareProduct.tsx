@@ -90,8 +90,8 @@ export default function AddHardwareProduct() {
 
     return (
         <div className="w-full">
-            <div className="w-full max-w-7xl dark:bg-gray-900 bg-white md:p-10 p-4">
-                <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
+            <div className="w-full max-w-7xl dark:bg-gray-900 bg-white md:p-10 p-4 mx-auto">
+                <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6 text-center">
                     Add New Product
                 </h1>
 

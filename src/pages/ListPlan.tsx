@@ -9,10 +9,10 @@ import type { PlanScheme } from "../types/planType";
 
 export default function ListPlan() {
   const { data: plans, isLoading, isError } = useQuery<PlanScheme[]>({
-    queryKey: ["Plan-List"],
+    queryKey: ["plan-list"],
     queryFn: getPlan,
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 50 * 60 * 1000,
     // refetchOnMount: data => !data
   });
 
