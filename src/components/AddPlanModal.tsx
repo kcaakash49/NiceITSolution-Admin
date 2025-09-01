@@ -10,12 +10,12 @@ type AddPlanModalProps = {
 
 };
 
-type PlanType = "devlopment" | "hosting" | 'bundle'
+type PlanType = "starter" | "professional" | 'premium' | "enterprise"
 
-export default function AddPlanModal({ serviceId, isOpen, onClose }: AddPlanModalProps) {
+export default function AddPlanModal({ serviceId,isOpen, onClose }: AddPlanModalProps) {
   const [formData, setFormData] = useState({
     name: "",
-    type: "devlopment" as PlanType,
+    type: "starter" as PlanType,
     priceMonthly: "",
     priceOneTime: "",
     contractDuration: "",
@@ -23,19 +23,21 @@ export default function AddPlanModal({ serviceId, isOpen, onClose }: AddPlanModa
     isActive: true,
   });
 
-  if (!isOpen) return null;
-
+  
   const planMutation = useMutation({
     mutationFn: createPlan,
     onSuccess: (data) => {
-        alert("Adding Success");
-        console.log(data);
+      alert("Adding Success");
+      console.log(data);
+      onClose();
     },
     onError: () => {
-        alert("Adding Failed");
-        console.log("Something happened");
+      alert("Adding Failed");
+      console.log("Something happened");
     }
   })
+  if (!isOpen) return null;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target as HTMLInputElement; // cast here
     const { name, value, type, checked } = target;
@@ -64,11 +66,11 @@ export default function AddPlanModal({ serviceId, isOpen, onClose }: AddPlanModa
     const payload = {
       ...formData,
       productId: serviceId,
-      priceMonthly: formData.priceMonthly ? parseFloat(formData.priceMonthly) : undefined,
-      priceOneTime: formData.priceOneTime ? parseFloat(formData.priceOneTime) : undefined,
-      contractDuration: formData.contractDuration ? parseInt(formData.contractDuration) : undefined,
+      priceMonthly: formData.priceMonthly ? parseFloat(formData.priceMonthly) : null,
+      priceOneTime: formData.priceOneTime ? parseFloat(formData.priceOneTime) : null,
+      contractDuration: formData.contractDuration ? parseInt(formData.contractDuration) : null,
     };
-
+    console.log(payload);
     planMutation.mutate(payload);
 
      
@@ -103,9 +105,10 @@ export default function AddPlanModal({ serviceId, isOpen, onClose }: AddPlanModa
               className="w-full border p-2 rounded dark:bg-gray-700 dark:text-gray-100"
               required
             >
-              <option value="devlopment">Development</option>
-              <option value="hosting">Hosting</option>
-              <option value="bundle">Bundle</option>
+              <option value="starter">Starter</option>
+              <option value="professional">Professional</option>
+              <option value="premium">Premium</option>
+              <option value="enterprise">Enterprise</option>
             </select>
           </div>
 

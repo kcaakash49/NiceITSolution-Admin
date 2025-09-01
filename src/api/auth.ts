@@ -1,13 +1,14 @@
 
+import type { SignInSchema } from "@kcaakash/validators";
 import axios from "axios";
 
 
-type CredentialType = {
-    email: string
-    password: string
-}
+// type CredentialType = {
+//     email: string
+//     password: string
+// }
 
-export const loginAdmin = async(credentials: CredentialType) => {
+export const loginAdmin = async(credentials: SignInSchema) => {
     const { data } = await axios.post('http://localhost:4000/auth/signin', credentials ,{
         withCredentials: true
     });

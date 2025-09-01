@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
-    "@kcaakash/validators": "^1.0.0",
+    "@kcaakash/validators": "^1.3.0",
     "@tanstack/react-query": "^5.84.2",
     "autoprefixer": "^10.4.21",
     "axios": "^1.11.0",

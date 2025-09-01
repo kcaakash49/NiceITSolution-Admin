@@ -2,10 +2,12 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCategories, removeCategory } from "../api/hardware";
+import { createProduct, fetchCategories, removeCategory } from "../api/hardware";
 import AddCategoryModal from "../components/AddCategoryModal";
 import { Plus, X } from "lucide-react";
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
+import type { CategoryType } from "../types/category";
+
 
 export default function AddHardwareProduct() {
     const [formData, setFormData] = useState({
@@ -16,11 +18,20 @@ export default function AddHardwareProduct() {
         stock: "",
         length: "",
     });
+
+    const resetForm = () => setFormData({
+        name: "",
+        description: "",
+        categoryId: "",
+        price: "",
+        stock: "",
+        length: "",
+    })
     const queryClient = useQueryClient();
     const deleteMutation = useMutation({
         mutationFn: removeCategory,
         onSuccess: (data) => {
-            // alert(data.message)
+            alert(data.message)
             queryClient.invalidateQueries({
                 queryKey: ['categories']
             })
@@ -29,6 +40,20 @@ export default function AddHardwareProduct() {
             alert(data.message)
         }
     })
+
+    const addProductMutation = useMutation({
+        mutationFn: createProduct,
+        onSuccess: (data) => {
+            console.log("Product Added Successfully!!!", data);
+            resetForm();
+
+        },
+        onError: () => {
+            console.log("Something Happened");
+        },
+
+    });
+    
 
     const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -43,7 +68,7 @@ export default function AddHardwareProduct() {
     console.log(categories, isLoading, isError);
 
     const user = useAuthStore(state => state.user);
-    console.log(user?.role);
+   
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -53,8 +78,14 @@ export default function AddHardwareProduct() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Product Submitted:", formData);
-        // TODO: send to backend
+        const payLoad = {
+            ...formData,
+            price : formData.price ? parseFloat(formData.price) : null,
+            stock : formData.stock ? parseFloat(formData.stock) : null,
+            length : formData.length ? parseFloat(formData.length) : null
+        }
+        console.log("Product Submitted:", payLoad);
+        addProductMutation.mutate(payLoad);
     };
 
     return (
@@ -111,7 +142,7 @@ export default function AddHardwareProduct() {
                         ${isLoading || isError ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
                                         {formData.categoryId
-                                            ? categories?.categories?.find((c: any) => c.id === formData.categoryId)?.name
+                                            ? categories?.categories?.find((c: CategoryType) => c.id === formData.categoryId)?.name
                                             : "Select Category"}
                                     </ListboxButton>
 
@@ -126,7 +157,7 @@ export default function AddHardwareProduct() {
                                         )}
                                         {!isLoading &&
                                             !isError &&
-                                            categories?.categories?.map((cat: any) => (
+                                            categories?.categories?.map((cat: CategoryType) => (
                                                 <ListboxOption
                                                     key={cat.id}
                                                     value={cat.id}
@@ -206,7 +237,10 @@ export default function AddHardwareProduct() {
                         <input
                             type="text"
                             name="length"
-
+                            disabled={
+                                !!formData.categoryId && 
+                                !categories?.categories?.find((c: CategoryType) => c.id === formData.categoryId)?.isLengthNeeded
+                            }
                             value={formData.length}
                             onChange={handleChange}
                             placeholder="Enter length (e.g., 100m)"
@@ -219,8 +253,11 @@ export default function AddHardwareProduct() {
                         <button
                             type="submit"
                             className="px-6 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700"
+                            disabled= {addProductMutation.isPending}
                         >
-                            Save Product
+                            {
+                                addProductMutation.isPending ? <span>Adding....</span> : <span>Save Product</span>
+                            }
                         </button>
                     </div>
                 </form>

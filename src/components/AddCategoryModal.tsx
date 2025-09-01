@@ -4,11 +4,10 @@ import { createCategory } from "../api/hardware";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: (newCategory: any) => void; // optional callback to update categories list
+  onClose: () => void; // optional callback to update categories list
 }
 
-export default function AddCategoryModal({ isOpen, onClose, onSuccess }: AddCategoryModalProps) {
+export default function AddCategoryModal({ isOpen, onClose}: AddCategoryModalProps) {
   const [name, setName] = useState("");
   const [isLengthNeeded, setIsLengthNeeded] = useState(true);
   const queryClient = useQueryClient();

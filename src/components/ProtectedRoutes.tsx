@@ -19,10 +19,15 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         refetchOnMount: data => !data,
 
     });
+
+    console.log("UserInfo", userInfo);
     const prevUserRef = useRef<User>(userInfo);
+    console.log("prevUserRef", prevUserRef.current);
     useEffect(() => {
+        console.log("Use Effect ran");
         if (isSuccess && user) {
             if (!isEqual(prevUserRef.current, user.user)) {
+                console.log("User is Setting");
                 setUser(user.user);
                 prevUserRef.current = user.user;
               }

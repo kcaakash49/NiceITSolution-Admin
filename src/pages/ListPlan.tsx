@@ -3,29 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getPlan } from "../api/plan";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PlanCard from "../components/PlanCard";
+import type { PlanScheme } from "../types/planType";
 
-// TypeScript type for Plan
-type PlanType = {
-  id: string;
-  productId: string;
-  name: string;
-  type: "devlopment" | "hosting" | "bundle";
-  priceMonthly?: number | null;
-  priceOneTime?: number | null;
-  contractDuration?: number | null;
-  features: string[];
-  isActive: boolean;
-  serviceProduct: {
-    name: string;
-    description: string;
-  };
-};
+
 
 export default function ListPlan() {
-  const { data: plans, isLoading, isError } = useQuery<PlanType[]>({
+  const { data: plans, isLoading, isError } = useQuery<PlanScheme[]>({
     queryKey: ["Plan-List"],
     queryFn: getPlan,
     retry: false,
+    staleTime: 5 * 60 * 1000,
+    // refetchOnMount: data => !data
   });
 
   const [activeOnly, setActiveOnly] = useState(false);
@@ -51,7 +39,7 @@ export default function ListPlan() {
   if (isError) return <div className="flex flex-1 items-center justify-center">Please try again</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className=" mx-auto">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
         All Plans
       </h1>
