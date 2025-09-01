@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getService } from "../api/service";
 import ServiceCard from "../components/ServiceCard";
 import AddPlanModal from "../components/AddPlanModal";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function ListService() {
   const { data, isLoading, isError } = useQuery({
@@ -17,7 +18,7 @@ export default function ListService() {
   const closeAddPlanModal = () => setSelectedServiceId(null);
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return <div className="flex flex-1 items-center justify-center"><LoadingSpinner/></div>;
   }
 
   if (isError) {

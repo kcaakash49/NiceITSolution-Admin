@@ -6,9 +6,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginAdmin } from "../api/auth";
 import { useAuthStore } from "../store/useAuthStore";
 
+
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const setUser  = useAuthStore((state) => state.setUser);
+  const userInfo = useAuthStore((state) => state.user);
   
  
   useEffect(() => {
@@ -24,6 +27,12 @@ export default function LoginPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if(userInfo){
+      navigate("/");
+    }
+  },[navigate, userInfo]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const queryClient = useQueryClient();
@@ -31,8 +40,8 @@ export default function LoginPage() {
   const mutation = useMutation({
     mutationFn: loginAdmin,
     onSuccess: (data) => {
-      queryClient.setQueryData(["current-user"], data);
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.setQueryData(["current-user"], data);
       setUser(data?.user);
       navigate("/", { replace: true});
     },
@@ -47,6 +56,7 @@ export default function LoginPage() {
     mutation.mutate({ email, password });
   };
 
+ 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-400 via-purple-500 to-pink-500 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
       <form

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useSignout } from "./hooks/useSignOut";
+import { useAuthStore } from "./store/useAuthStore";
 // import type { UseMutationResult } from "@tanstack/react-query";
 
 // const navItems = [
@@ -45,6 +46,7 @@ export default function Layout() {
     return false;
   });
 
+  const userInfo = useAuthStore(state => state.user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const signOutMutation = useSignout();
 
@@ -78,7 +80,7 @@ export default function Layout() {
     md:translate-x-0
   `}
       >
-        <h2 className="text-xl md:2xl font-bold mb-5 md:mb-8">Admin Panel</h2>
+        <h2 className="text-xl md:2xl font-bold mb-5 md:mb-8">Welcome,{userInfo?.name.split(" ")[0]}</h2>
 
         {/* Navigation Links */}
         {/* <ul className="flex flex-col space-y-3">

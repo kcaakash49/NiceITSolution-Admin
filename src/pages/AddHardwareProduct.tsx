@@ -65,7 +65,7 @@ export default function AddHardwareProduct() {
         refetchInterval: 60 * 60 * 1000,
         refetchOnMount: data => !data
     })
-    console.log(categories, isLoading, isError);
+    
 
     const user = useAuthStore(state => state.user);
    

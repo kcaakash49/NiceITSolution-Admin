@@ -6,15 +6,17 @@ import { useEffect, useRef } from "react";
 import { useAuthStore, type User } from "../store/useAuthStore";
 import { isEqual } from "lodash";
 import LoadingSpinner from "./LoadingSpinner";
+import { useSignout } from "../hooks/useSignOut";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const setUser = useAuthStore(state => state.setUser);
     const userInfo = useAuthStore(state => state.user);
+    const signOutMutation = useSignout();
     const { data: user, isLoading, isSuccess, isError, dataUpdatedAt } = useQuery({
         queryKey: ["current-user"],
         queryFn: verifyCookie,
         retry: false,
-        staleTime: 4 * 30 * 1000,
+        staleTime: 4 * 60 * 1000,
         refetchInterval: 5 * 60 * 1000,
         refetchOnMount: data => !data,
 
@@ -34,10 +36,16 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         }
     }, [isSuccess, user, setUser, dataUpdatedAt])
 
+    useEffect(() => {
+        if (isError){
+            signOutMutation.mutate();
+        }
+    }, [isError, signOutMutation]);
 
-    if (isLoading) return <div className="flex flex-1 items-center justify-center dark:bg-gray-900"><LoadingSpinner /></div>;
 
-    if (isError || !user) {
+    if (isLoading || isError) return <div className="flex min-h-screen items-center justify-center dark:bg-gray-900"><LoadingSpinner /></div>;
+
+    if (!user) {
 
         return <Navigate to="/login" replace />;
     }

@@ -29,6 +29,7 @@ export const MainRouter = createBrowserRouter(
 
             </Route>
             <Route path="/login" element={<LoginPage />} />
+           
         </Route>
     )
 )
