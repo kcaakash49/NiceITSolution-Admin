@@ -20,26 +20,27 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
     });
 
-    console.log("UserInfo", userInfo);
     const prevUserRef = useRef<User>(userInfo);
-    console.log("prevUserRef", prevUserRef.current);
+
     useEffect(() => {
-        console.log("Use Effect ran");
         if (isSuccess && user) {
             if (!isEqual(prevUserRef.current, user.user)) {
-                console.log("User is Setting");
-                setUser(user.user);
-                prevUserRef.current = user.user;
-              }
+                // To escape react's scheduling so, userinfo gets stored in sessionstorage without refresh
+                requestAnimationFrame(() => {
+                    setUser(user.user);
+                    prevUserRef.current = user.user;
+                });
+            }
         }
     }, [isSuccess, user, setUser, dataUpdatedAt])
 
-    if (isLoading) return <div className="flex flex-1 items-center justify-center dark:bg-gray-900"><LoadingSpinner/></div>;
+
+    if (isLoading) return <div className="flex flex-1 items-center justify-center dark:bg-gray-900"><LoadingSpinner /></div>;
 
     if (isError || !user) {
 
         return <Navigate to="/login" replace />;
     }
 
-    return children; // Render child routes if authenticated
+    return children; 
 }

@@ -9,6 +9,7 @@ import { useAuthStore } from "../store/useAuthStore";
 export default function LoginPage() {
   const navigate = useNavigate();
   const setUser  = useAuthStore((state) => state.setUser);
+  
  
   useEffect(() => {
     if (typeof window === "undefined") return;
