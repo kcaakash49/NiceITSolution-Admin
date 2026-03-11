@@ -11,11 +11,18 @@ export default function AddCategoryModal({ isOpen, onClose }: AddCategoryModalPr
   const [name, setName] = useState("");
   const [isLengthNeeded, setIsLengthNeeded] = useState(true);
   const [image, setImage] = useState<File | null>(null);
+  const [showValidation, setValidation] = useState(false);
   const queryClient = useQueryClient();
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!image){
+      setValidation(true);
+      return;
+    }
+
+    setValidation(false);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -77,19 +84,45 @@ export default function AddCategoryModal({ isOpen, onClose }: AddCategoryModalPr
           </div>
 
           {/* Single Image Upload */}
-          <div>
+          <div className="flex flex-col">
             <label className="block mb-1 text-gray-700 dark:text-gray-300">Category Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
-              className="block w-full text-gray-700 dark:text-gray-300"
-              required
-            />
+
+            <div className="flex items-center space-x-4">
+              {/* Styled button */}
+              <label
+                htmlFor="category-image"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                {image ? "Change Image" : "Choose Image"}
+              </label>
+
+              {/* File input */}
+              <input
+                id="category-image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+                className="hidden"
+                
+              />
+
+              {/* Preview */}
+              {image && (
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Category"
+                  className="w-16 h-16 object-cover rounded-md border dark:border-gray-600"
+                />
+              )}
+            </div>
+
+            {/* Validation message */}
+            {!image && showValidation && (
+              <span className="text-red-500 text-sm mt-1">
+                Please select a file
+              </span>
+            )}
           </div>
-
-
-
 
           <div className="flex justify-end space-x-3 mt-4">
             <button
