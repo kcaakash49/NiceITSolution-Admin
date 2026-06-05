@@ -8,3 +8,10 @@ export interface CategoryType extends CategorySchema {
     products?: any
 
 }
+
+
+export interface CategoriesType {
+    id: string;
+    name:string;
+    image?:string;
+}

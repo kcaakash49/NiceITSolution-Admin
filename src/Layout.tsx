@@ -21,15 +21,17 @@ const navSections = [
     name: "Services",
     children: [
       { name: "Add Service", path: "/add-service" },
-      { name: "List Services", path: "/list-service"},
-      { name: "List Plans", path: "/list-plans"},
+      { name: "List Services", path: "/list-service" },
+      { name: "List Plans", path: "/list-plans" },
     ],
   },
   {
-    name: "Products",
+    name: "Product",
     children: [
       { name: "Add FTTH Product", path: "/add-product" },
-      { name: "Display Products", path: "/products" },
+      { name: "Display Products", path: "/display-products" },
+      { name: "Categories", path: "/categories" },
+      { name: "Products", path: "/products" }
     ],
   },
 ];

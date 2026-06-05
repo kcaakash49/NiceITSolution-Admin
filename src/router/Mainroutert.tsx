@@ -8,6 +8,8 @@ import AddService from "../pages/AddService";
 import ListService from "../pages/ListService";
 import ListPlan from "../pages/ListPlan";
 import AddHardwareProduct from "../pages/AddHardwareProduct";
+import AddCategoryForm from "../components/product/AddCategoryForm";
+import ProductForm from "../components/product/AddProductForm";
 // import ProtectedRoutes from "../components/ProtectedRoutes";
 
 
@@ -21,6 +23,8 @@ export const MainRouter = createBrowserRouter(
                 <Route path = "/list-service" element = {<ProtectedRoutes><ListService/></ProtectedRoutes>}/>
                 <Route path="/list-plans" element = {<ProtectedRoutes><ListPlan/></ProtectedRoutes>}/>
                 <Route path = "/add-product" element = {<ProtectedRoutes><AddHardwareProduct/></ProtectedRoutes>}/>
+                <Route path = "/categories" element = {<ProtectedRoutes><AddCategoryForm/></ProtectedRoutes>}/>
+                <Route path = "/products" element = {<ProtectedRoutes><ProductForm/></ProtectedRoutes>}/>
                 <Route path="*" element = {<ProtectedRoutes><PageNotFound/></ProtectedRoutes>}/>
                 {/* <Route element = {<ProtectedRoutes/>}>
                     <Route path = "/dashboard" element = {<App/>}/>
